@@ -1,16 +1,13 @@
-package hyperledger.cefetmg.tcc.services;
+package hyperledger.cefetmg.tcc.service;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.PrivateKey;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
 
 import org.hyperledger.fabric.gateway.Contract;
-import org.hyperledger.fabric.gateway.ContractException;
 import org.hyperledger.fabric.gateway.Gateway;
 import org.hyperledger.fabric.gateway.Identities;
 import org.hyperledger.fabric.gateway.Identity;
@@ -26,10 +23,22 @@ import org.hyperledger.fabric_ca.sdk.EnrollmentRequest;
 import org.hyperledger.fabric_ca.sdk.HFCAClient;
 import org.hyperledger.fabric_ca.sdk.RegistrationRequest;
 
+import hyperledger.cefetmg.tcc.dto.DtoAsset;
+
 public class HyperledgerService {
 
+	private Gateway.Builder builder;
 	static {
 		System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true");
+	}
+
+	public HyperledgerService() {
+		try {
+			connectToLedger();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void enrollAdmin() throws Exception {
@@ -141,7 +150,7 @@ public class HyperledgerService {
 		System.out.println("Successfully enrolled user \"appUser\" and imported it into the wallet");
 	}
 
-	public void createTransaction() throws IOException {
+	public void connectToLedger() throws IOException {
 
 		// enrolls the admin and registers the user
 		try {
@@ -159,11 +168,12 @@ public class HyperledgerService {
 		Path networkConfigFile = Paths.get("connection-org1.json"); // connection-org1.yaml
 
 		// Configure the gateway connection used to access the network.
-		Gateway.Builder builder = Gateway.createBuilder().identity(wallet, "appUser").networkConfig(networkConfigFile)
-				.discovery(true);
+		builder = Gateway.createBuilder().identity(wallet, "appUser").networkConfig(networkConfigFile).discovery(true);
+	}
 
+	public String getAssets() {
+		String assets = "";
 		// Create a gateway connection
-//		Gateway gateway = builder.connect();
 		try (Gateway gateway = builder.connect()) {
 
 //			 Obtain a smart contract deployed on the network.
@@ -175,8 +185,8 @@ public class HyperledgerService {
 			byte[] result;
 			System.out.println("\n");
 			result = contract.evaluateTransaction("GetAllAssets");
-			System.out.println("Evaluate Transaction: GetAllAssets, result: " + new String(result));
-
+			assets = new String(result);
+			System.out.println("Evaluate Transaction: GetAllAssets, result: " + assets);
 //			result = contract.
 //			contract.submitTransaction("CreateAsset", "asset13", "yellow", "5", "Tom", "1300");
 //			result = contract.submitTransaction("UpdateAsset", "asset1", "blue", "50", "Tomoko", "300");
@@ -189,6 +199,25 @@ public class HyperledgerService {
 //			// Evaluate transactions that query state from the ledger. 
 //			byte[] queryAllCarsResult = contract.evaluateTransaction("GetAllAssets");
 //			System.out.println(new String(queryAllCarsResult, StandardCharsets.UTF_8));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return assets;
+	}
+
+	public void createAsset(DtoAsset asset) {
+		try (Gateway gateway = builder.connect()) {
+
+//			 Obtain a smart contract deployed on the network.
+			Network network = gateway.getNetwork("mychannel");
+			Contract contract = network.getContract("basic");
+
+//			contract.submitTransaction("InitLedger");
+
+//			byte[] result;
+			contract.submitTransaction("CreateAsset", asset.getAssetID(), asset.getColor(),
+					String.valueOf(asset.getSize()), asset.getOwner(), String.valueOf(asset.getAppraisedValue()));
 
 		} catch (Exception e) {
 			e.printStackTrace();
