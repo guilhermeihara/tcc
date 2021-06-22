@@ -14,8 +14,8 @@ import org.hyperledger.fabric.contract.annotation.Info;
 import org.hyperledger.fabric.contract.annotation.License;
 import org.hyperledger.fabric.contract.annotation.Transaction;
 
-@Contract(name = "MyAssetContract",
-    info = @Info(title = "MyAsset contract",
+@Contract(name = "test",
+    info = @Info(title = "Test contract",
                 description = "Very basic Java Contract example",
                 version = "0.0.1",
                 license =

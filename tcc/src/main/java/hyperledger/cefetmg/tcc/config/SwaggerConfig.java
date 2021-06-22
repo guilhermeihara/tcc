@@ -1,4 +1,4 @@
-package hyperledger.cefetmg.tcc;
+package hyperledger.cefetmg.tcc.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -174,19 +174,22 @@ public class HyperledgerService {
 	public String getAssets() {
 		String assets = "";
 		// Create a gateway connection
-		try (Gateway gateway = builder.connect()) {
-
+		try {
+			Gateway gateway = builder.connect();
 //			 Obtain a smart contract deployed on the network.
 			Network network = gateway.getNetwork("mychannel");
-			Contract contract = network.getContract("basic");
+//			Contract contract = network.getContract("basic");
+			Contract contract = network.getContract("test");
 
 //			contract.submitTransaction("InitLedger");
 
 			byte[] result;
 			System.out.println("\n");
+//			result = contract.evaluateTransaction("GetAllAssets");
 			result = contract.evaluateTransaction("GetAllAssets");
 			assets = new String(result);
 			System.out.println("Evaluate Transaction: GetAllAssets, result: " + assets);
+			
 //			result = contract.
 //			contract.submitTransaction("CreateAsset", "asset13", "yellow", "5", "Tom", "1300");
 //			result = contract.submitTransaction("UpdateAsset", "asset1", "blue", "50", "Tomoko", "300");
@@ -199,10 +202,10 @@ public class HyperledgerService {
 //			// Evaluate transactions that query state from the ledger. 
 //			byte[] queryAllCarsResult = contract.evaluateTransaction("GetAllAssets");
 //			System.out.println(new String(queryAllCarsResult, StandardCharsets.UTF_8));
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println("OIE");
 		return assets;
 	}
 
@@ -211,14 +214,15 @@ public class HyperledgerService {
 
 //			 Obtain a smart contract deployed on the network.
 			Network network = gateway.getNetwork("mychannel");
-			Contract contract = network.getContract("basic");
+			Contract contract = network.getContract("test"  );
 
 //			contract.submitTransaction("InitLedger");
 
 //			byte[] result;
-			contract.submitTransaction("CreateAsset", asset.getAssetID(), asset.getColor(),
-					String.valueOf(asset.getSize()), asset.getOwner(), String.valueOf(asset.getAppraisedValue()));
-
+//			contract.submitTransaction("createMyAsset", asset.getAssetID(), asset.getColor(),
+//					String.valueOf(asset.getSize()), asset.getOwner(), String.valueOf(asset.getAppraisedValue()));
+			contract.submitTransaction("CreateAsset", asset.getAssetID(), "teste1", "teste2", "teste3",
+					"teste4", "teste5");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

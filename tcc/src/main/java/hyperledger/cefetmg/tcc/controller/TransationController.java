@@ -15,6 +15,12 @@ public class TransationController {
 	
 	HyperledgerService hyperledgerService = new HyperledgerService();
 	
+	
+	@GetMapping("/ass")
+	public String getAss() {
+		return "Hello World";
+	}
+	
 	@GetMapping("/assets")
 	public String getAssets() {
 		return hyperledgerService.getAssets();
