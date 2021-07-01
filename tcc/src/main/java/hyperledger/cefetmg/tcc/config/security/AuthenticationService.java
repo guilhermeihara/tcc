@@ -22,7 +22,6 @@ public class AuthenticationService implements UserDetailsService {
 		Optional<User> user = repository.findByEmail(username);
 
 		if (user.isPresent()) {
-			System.out.println(user.get().getPassword());
 			return user.get();
 		}
 

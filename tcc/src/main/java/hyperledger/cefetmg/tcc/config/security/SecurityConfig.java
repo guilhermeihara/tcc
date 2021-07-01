@@ -11,18 +11,27 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import hyperledger.cefetmg.tcc.repository.UserRepository;
 
 //@EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private AuthenticationService authenticationService;
+	private TokenService _tokenService;
+
+	@Autowired
+	private AuthenticationService _authenticationService;
+
+	@Autowired
+	private UserRepository _userRepository;
 
 	// Authentication Configuration
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(authenticationService).passwordEncoder(new BCryptPasswordEncoder());
+		auth.userDetailsService(_authenticationService).passwordEncoder(new BCryptPasswordEncoder());
 	}
 
 	// Authorization Configuration
@@ -31,7 +40,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// TODO Auto-generated method stub
 
 		http.authorizeRequests().antMatchers(HttpMethod.POST, "/auth").permitAll().and().csrf().disable()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.addFilterBefore(new TokenAuthenticationFilter(_tokenService, _userRepository),
+						UsernamePasswordAuthenticationFilter.class);
 		// http.authorizeRequests().anyRequest().authenticated().and().formLogin();
 		// .antMatchers("/permited").permitAll() Permit all request on /permited
 		// .antMatchers(HttpMethod.GET,"/permited/*").permitAll() Permit get request on

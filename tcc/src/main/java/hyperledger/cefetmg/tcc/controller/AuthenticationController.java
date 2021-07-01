@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import hyperledger.cefetmg.tcc.config.security.TokenService;
+import hyperledger.cefetmg.tcc.dto.TokenDto;
 import hyperledger.cefetmg.tcc.form.LoginForm;
 
 @RestController
@@ -27,14 +28,13 @@ public class AuthenticationController {
 	private TokenService tokenService;
 
 	@PostMapping
-	public ResponseEntity<?> authenticate(@RequestBody @Valid LoginForm form) {
+	public ResponseEntity<TokenDto> authenticate(@RequestBody @Valid LoginForm form) {
 		UsernamePasswordAuthenticationToken loginData = form.converter();
 
 		try {
 			Authentication authentication = authManager.authenticate(loginData);
 			String token = tokenService.generateToken(authentication);
-			System.out.println("Token:" + token);
-			return ResponseEntity.ok().build();
+			return ResponseEntity.ok(new TokenDto(token, "Bearer"));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.badRequest().build();
 		}
