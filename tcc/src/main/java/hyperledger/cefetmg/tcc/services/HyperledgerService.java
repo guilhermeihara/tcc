@@ -1,4 +1,4 @@
-package hyperledger.cefetmg.tcc.service;
+package hyperledger.cefetmg.tcc.services;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -22,10 +22,13 @@ import org.hyperledger.fabric.sdk.security.CryptoSuiteFactory;
 import org.hyperledger.fabric_ca.sdk.EnrollmentRequest;
 import org.hyperledger.fabric_ca.sdk.HFCAClient;
 import org.hyperledger.fabric_ca.sdk.RegistrationRequest;
+import org.springframework.stereotype.Service;
 
 import hyperledger.cefetmg.tcc.dto.DtoAsset;
+import hyperledger.cefetmg.tcc.interfaces.IHyperledgerService;
 
-public class HyperledgerService {
+@Service
+public class HyperledgerService implements IHyperledgerService{
 
 	private Gateway.Builder builder;
 	static {

@@ -39,8 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		// TODO Auto-generated method stub
 
-		http.authorizeRequests().antMatchers(HttpMethod.POST, "/auth").permitAll().and().csrf().disable()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+		http.authorizeRequests().antMatchers(HttpMethod.POST, "/auth").permitAll().anyRequest().authenticated().and()
+				.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.addFilterBefore(new TokenAuthenticationFilter(_tokenService, _userRepository),
 						UsernamePasswordAuthenticationFilter.class);
 		// http.authorizeRequests().anyRequest().authenticated().and().formLogin();
@@ -48,13 +48,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// .antMatchers(HttpMethod.GET,"/permited/*").permitAll() Permit get request on
 		// /permited
 
-		super.configure(http);
+//		super.configure(http);
 	}
 
 	// Static Resources Configurations js, css, images etc
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		super.configure(web);
+		web.ignoring().antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**",
+				"/swagger-resources/**");
 	}
 
 	@Override

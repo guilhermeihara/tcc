@@ -1,4 +1,4 @@
-package hyperledger.cefetmg.tcc.controller;
+package hyperledger.cefetmg.tcc.controllers;
 
 import javax.validation.Valid;
 

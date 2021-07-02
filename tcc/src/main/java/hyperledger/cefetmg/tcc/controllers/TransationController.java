@@ -1,5 +1,6 @@
-package hyperledger.cefetmg.tcc.controller;
+package hyperledger.cefetmg.tcc.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,30 +8,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import hyperledger.cefetmg.tcc.dto.DtoAsset;
-import hyperledger.cefetmg.tcc.service.HyperledgerService;
+import hyperledger.cefetmg.tcc.services.HyperledgerService;
 
 @RestController
 @RequestMapping("/")
 public class TransationController {
 	
-	HyperledgerService hyperledgerService = new HyperledgerService();
+	@Autowired
+	HyperledgerService _hyperledgerService;
 	
 	
-	@GetMapping("/ass")
+	@GetMapping("/teste")
 	public String getAss() {
 		return "Hello World";
 	}
 	
 	@GetMapping("/assets")
 	public String getAssets() {
-		return hyperledgerService.getAssets();
+		return _hyperledgerService.getAssets();
 	}
 	
 	@PostMapping("/assets")
 	public String updateAsset(@RequestBody DtoAsset asset) {
 		
 		System.out.println("Teste POST: "+asset.toString());
-		hyperledgerService.createAsset(asset);
+		_hyperledgerService.createAsset(asset);
 		return "";
 	}
 	
