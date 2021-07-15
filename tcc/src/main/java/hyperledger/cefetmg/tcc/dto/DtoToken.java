@@ -1,11 +1,11 @@
 package hyperledger.cefetmg.tcc.dto;
 
-public class TokenDto {
+public class DtoToken {
 
 	private String token;
 	private String type;
 	
-	public TokenDto(String token, String type) {
+	public DtoToken(String token, String type) {
 		this.token = token;
 		this.type = type;
 	}

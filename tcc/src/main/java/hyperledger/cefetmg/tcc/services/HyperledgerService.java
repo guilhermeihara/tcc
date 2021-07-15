@@ -28,7 +28,7 @@ import hyperledger.cefetmg.tcc.dto.DtoAsset;
 import hyperledger.cefetmg.tcc.interfaces.IHyperledgerService;
 
 @Service
-public class HyperledgerService implements IHyperledgerService{
+public class HyperledgerService implements IHyperledgerService {
 
 	private Gateway.Builder builder;
 	static {
@@ -39,12 +39,89 @@ public class HyperledgerService implements IHyperledgerService{
 		try {
 			connectToLedger();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void enrollAdmin() throws Exception {
+	public String getAssets() {
+		String assets = "";
+		// Create a gateway connection
+		try {
+			Gateway gateway = builder.connect();
+//			 Obtain a smart contract deployed on the network.
+			Network network = gateway.getNetwork("mychannel");
+//			Contract contract = network.getContract("basic");
+			Contract contract = network.getContract("test");
+
+//			contract.submitTransaction("InitLedger");
+
+			byte[] result;
+			System.out.println("\n");
+//			result = contract.evaluateTransaction("GetAllAssets");
+			result = contract.evaluateTransaction("GetAllAssets");
+			assets = new String(result);
+			System.out.println("Evaluate Transaction: GetAllAssets, result: " + assets);
+
+//			result = contract.
+//			contract.submitTransaction("CreateAsset", "asset13", "yellow", "5", "Tom", "1300");
+//			result = contract.submitTransaction("UpdateAsset", "asset1", "blue", "50", "Tomoko", "300");
+//
+//			// Submit transactions that store state to the ledger.
+//			byte[] createCarResult = contract.createTransaction("CreateAsset").submit("asset13", "yellow", "5", "Tom",
+//					"1300");
+//			System.out.println(new String(createCarResult, StandardCharsets.UTF_8));
+//
+//			// Evaluate transactions that query state from the ledger. 
+//			byte[] queryAllCarsResult = contract.evaluateTransaction("GetAllAssets");
+//			System.out.println(new String(queryAllCarsResult, StandardCharsets.UTF_8));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("OIE");
+		return assets;
+	}
+
+	public void createAsset(DtoAsset asset) {
+		try (Gateway gateway = builder.connect()) {
+
+//			 Obtain a smart contract deployed on the network.
+			Network network = gateway.getNetwork("mychannel");
+			Contract contract = network.getContract("test");
+
+//			contract.submitTransaction("InitLedger");
+
+//			byte[] result;
+//			contract.submitTransaction("createMyAsset", asset.getAssetID(), asset.getColor(),
+//					String.valueOf(asset.getSize()), asset.getOwner(), String.valueOf(asset.getAppraisedValue()));
+			contract.submitTransaction("CreateAsset", asset.getAssetID(), "teste1", "teste2", "teste3", "teste4",
+					"teste5");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void connectToLedger() throws IOException {
+
+		// enrolls the admin and registers the user
+		try {
+			enrollAdmin();
+			registerUser();
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+
+		// Load an existing wallet holding identities used to access the network.
+		Path walletDirectory = Paths.get("wallet");
+		Wallet wallet = Wallets.newFileSystemWallet(walletDirectory);
+
+		// Path to a common connection profile describing the network.
+		Path networkConfigFile = Paths.get("connection-org1.json"); // connection-org1.yaml
+
+		// Configure the gateway connection used to access the network.
+		builder = Gateway.createBuilder().identity(wallet, "appUser").networkConfig(networkConfigFile).discovery(true);
+	}
+
+	private void enrollAdmin() throws Exception {
 		// Create a CA client for interacting with the CA.
 		Properties props = new Properties();
 		props.put("pemFile", "certificate/ca.org1.example.com-cert.pem");
@@ -72,7 +149,7 @@ public class HyperledgerService implements IHyperledgerService{
 		System.out.println("Successfully enrolled user \"admin\" and imported it into the wallet");
 	}
 
-	public void registerUser() throws Exception {
+	private void registerUser() throws Exception {
 
 		// Create a CA client for interacting with the CA.
 		Properties props = new Properties();
@@ -151,84 +228,6 @@ public class HyperledgerService implements IHyperledgerService{
 		Identity user = Identities.newX509Identity("Org1MSP", enrollment);
 		wallet.put("appUser", user);
 		System.out.println("Successfully enrolled user \"appUser\" and imported it into the wallet");
-	}
-
-	public void connectToLedger() throws IOException {
-
-		// enrolls the admin and registers the user
-		try {
-			enrollAdmin();
-			registerUser();
-		} catch (Exception e) {
-			System.err.println(e);
-		}
-
-		// Load an existing wallet holding identities used to access the network.
-		Path walletDirectory = Paths.get("wallet");
-		Wallet wallet = Wallets.newFileSystemWallet(walletDirectory);
-
-		// Path to a common connection profile describing the network.
-		Path networkConfigFile = Paths.get("connection-org1.json"); // connection-org1.yaml
-
-		// Configure the gateway connection used to access the network.
-		builder = Gateway.createBuilder().identity(wallet, "appUser").networkConfig(networkConfigFile).discovery(true);
-	}
-
-	public String getAssets() {
-		String assets = "";
-		// Create a gateway connection
-		try {
-			Gateway gateway = builder.connect();
-//			 Obtain a smart contract deployed on the network.
-			Network network = gateway.getNetwork("mychannel");
-//			Contract contract = network.getContract("basic");
-			Contract contract = network.getContract("test");
-
-//			contract.submitTransaction("InitLedger");
-
-			byte[] result;
-			System.out.println("\n");
-//			result = contract.evaluateTransaction("GetAllAssets");
-			result = contract.evaluateTransaction("GetAllAssets");
-			assets = new String(result);
-			System.out.println("Evaluate Transaction: GetAllAssets, result: " + assets);
-			
-//			result = contract.
-//			contract.submitTransaction("CreateAsset", "asset13", "yellow", "5", "Tom", "1300");
-//			result = contract.submitTransaction("UpdateAsset", "asset1", "blue", "50", "Tomoko", "300");
-//
-//			// Submit transactions that store state to the ledger.
-//			byte[] createCarResult = contract.createTransaction("CreateAsset").submit("asset13", "yellow", "5", "Tom",
-//					"1300");
-//			System.out.println(new String(createCarResult, StandardCharsets.UTF_8));
-//
-//			// Evaluate transactions that query state from the ledger. 
-//			byte[] queryAllCarsResult = contract.evaluateTransaction("GetAllAssets");
-//			System.out.println(new String(queryAllCarsResult, StandardCharsets.UTF_8));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("OIE");
-		return assets;
-	}
-
-	public void createAsset(DtoAsset asset) {
-		try (Gateway gateway = builder.connect()) {
-
-//			 Obtain a smart contract deployed on the network.
-			Network network = gateway.getNetwork("mychannel");
-			Contract contract = network.getContract("test"  );
-
-//			contract.submitTransaction("InitLedger");
-
-//			byte[] result;
-//			contract.submitTransaction("createMyAsset", asset.getAssetID(), asset.getColor(),
-//					String.valueOf(asset.getSize()), asset.getOwner(), String.valueOf(asset.getAppraisedValue()));
-			contract.submitTransaction("CreateAsset", asset.getAssetID(), "teste1", "teste2", "teste3",
-					"teste4", "teste5");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 }
