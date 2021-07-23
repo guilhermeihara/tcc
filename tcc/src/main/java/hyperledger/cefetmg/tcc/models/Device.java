@@ -31,10 +31,14 @@ public class Device {
 
 	private String name;
 	
+	private String value;
+	
 	public Device() {
 		super();
 	}
 
+	
+	
 	public Device(Token token, User user, Long type, String name) {
 		super();
 		this.token = token;
@@ -96,6 +100,14 @@ public class Device {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	@Override

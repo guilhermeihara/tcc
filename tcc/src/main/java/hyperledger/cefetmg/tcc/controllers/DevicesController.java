@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import hyperledger.cefetmg.tcc.config.security.TokenService;
+import hyperledger.cefetmg.tcc.dto.DtoAsset;
 import hyperledger.cefetmg.tcc.dto.DtoDevice;
 import hyperledger.cefetmg.tcc.form.DeviceForm;
 import hyperledger.cefetmg.tcc.models.Device;
@@ -25,6 +26,7 @@ import hyperledger.cefetmg.tcc.models.User;
 import hyperledger.cefetmg.tcc.repository.DeviceRepository;
 import hyperledger.cefetmg.tcc.repository.TokenRepository;
 import hyperledger.cefetmg.tcc.repository.UserRepository;
+import hyperledger.cefetmg.tcc.services.HyperledgerService;
 
 @RestController
 @RequestMapping("/devices")
@@ -38,6 +40,8 @@ public class DevicesController {
 	private UserRepository _userRepository;
 	@Autowired
 	private TokenRepository _tokenRepository;
+	@Autowired
+	HyperledgerService _hyperledgerService;
 	
 	@PostMapping
 	@Transactional
@@ -51,6 +55,14 @@ public class DevicesController {
 		Token deviceToken = new Token(token, deviceForm.getTokenDuration());
 		_tokenRepository.save(deviceToken);
 		device.setToken(deviceToken);
+		
+		if(deviceForm.getValue() != null && !deviceForm.getValue().isEmpty()) {
+			device.setValue(deviceForm.getValue());
+		}else {
+			device.setValue("empty");
+		}
+		DtoAsset dtoAsset = new DtoAsset(device.getId().toString(), device.getName(), device.getValue());
+		_hyperledgerService.createAsset(dtoAsset);
 
 		return ResponseEntity.ok(new DtoDevice(device));
 	}

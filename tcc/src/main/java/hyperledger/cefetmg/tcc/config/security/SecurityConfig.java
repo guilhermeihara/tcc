@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		// TODO Auto-generated method stub
 
-		http.authorizeRequests().antMatchers(HttpMethod.POST, "/auth").permitAll().anyRequest().authenticated().and()
+		http.authorizeRequests().antMatchers("/transaction/*").permitAll().antMatchers(HttpMethod.POST, "/auth").permitAll().anyRequest().authenticated().and()
 				.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.addFilterBefore(new TokenAuthenticationFilter(_tokenService, _userRepository),
 						UsernamePasswordAuthenticationFilter.class);

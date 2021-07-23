@@ -63,6 +63,13 @@ public class TokenService {
 		return Long.parseLong(claims.getSubject());
 	}
 
+	public Long getDeviceId(HttpServletRequest request) {
+		String token = retriveToken(request);
+		
+		Claims claims = Jwts.parser().setSigningKey(this.secretDevices).parseClaimsJws(token).getBody();
+		return Long.parseLong(claims.getSubject());
+	}
+
 	public String retriveToken(HttpServletRequest request) {
 		String token = request.getHeader("Authorization");
 

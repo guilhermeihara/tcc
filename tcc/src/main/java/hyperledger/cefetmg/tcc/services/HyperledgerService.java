@@ -6,8 +6,12 @@ import java.nio.file.Paths;
 import java.security.PrivateKey;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 import org.hyperledger.fabric.gateway.Contract;
+import org.hyperledger.fabric.gateway.ContractEvent;
+import org.hyperledger.fabric.gateway.ContractException;
 import org.hyperledger.fabric.gateway.Gateway;
 import org.hyperledger.fabric.gateway.Identities;
 import org.hyperledger.fabric.gateway.Identity;
@@ -30,7 +34,16 @@ import hyperledger.cefetmg.tcc.interfaces.IHyperledgerService;
 @Service
 public class HyperledgerService implements IHyperledgerService {
 
+	private Logger logger = Logger.getLogger("HyperledgerService");
+
+	private String HYPERLEDGER_CHANNEL = "mychannel";
+	private String HYPERLEDGER_CONTRACT = "basic";
+
 	private Gateway.Builder builder;
+	private Gateway gateway;
+	private Network network;
+	private Contract contract;
+
 	static {
 		System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true");
 	}
@@ -38,6 +51,7 @@ public class HyperledgerService implements IHyperledgerService {
 	public HyperledgerService() {
 		try {
 			connectToLedger();
+			listener();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -47,21 +61,13 @@ public class HyperledgerService implements IHyperledgerService {
 		String assets = "";
 		// Create a gateway connection
 		try {
-			Gateway gateway = builder.connect();
-//			 Obtain a smart contract deployed on the network.
-			Network network = gateway.getNetwork("mychannel");
-//			Contract contract = network.getContract("basic");
-			Contract contract = network.getContract("test");
-
-//			contract.submitTransaction("InitLedger");
-
 			byte[] result;
 			System.out.println("\n");
 //			result = contract.evaluateTransaction("GetAllAssets");
 			result = contract.evaluateTransaction("GetAllAssets");
 			assets = new String(result);
 			System.out.println("Evaluate Transaction: GetAllAssets, result: " + assets);
-
+			
 //			result = contract.
 //			contract.submitTransaction("CreateAsset", "asset13", "yellow", "5", "Tom", "1300");
 //			result = contract.submitTransaction("UpdateAsset", "asset1", "blue", "50", "Tomoko", "300");
@@ -81,25 +87,80 @@ public class HyperledgerService implements IHyperledgerService {
 		return assets;
 	}
 
-	public void createAsset(DtoAsset asset) {
-		try (Gateway gateway = builder.connect()) {
+	public String getAssetValue(Long deviceId) {
+		String assets = "";
+		try {
+			byte[] result;
+			System.out.println("\n");
 
-//			 Obtain a smart contract deployed on the network.
-			Network network = gateway.getNetwork("mychannel");
-			Contract contract = network.getContract("test");
+			System.out.println("Evaluate Transaction: ReadAsset " + String.valueOf(deviceId));
+			// ReadAsset returns an asset with given assetID
+			result = contract.evaluateTransaction("ReadAsset", String.valueOf(deviceId));
+			System.out.println("result: " + new String(result));
 
-//			contract.submitTransaction("InitLedger");
+			assets = new String(result);
 
-//			byte[] result;
-//			contract.submitTransaction("createMyAsset", asset.getAssetID(), asset.getColor(),
-//					String.valueOf(asset.getSize()), asset.getOwner(), String.valueOf(asset.getAppraisedValue()));
-			contract.submitTransaction("CreateAsset", asset.getAssetID(), "teste1", "teste2", "teste3", "teste4",
-					"teste5");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println("OIE");
+		return assets;
 	}
-	
+
+	public boolean updateAsset(DtoAsset asset) {
+		byte[] result;
+
+		try {
+			result = contract.submitTransaction("UpdateAsset", asset.getId(), asset.getName(), asset.getValue());
+			System.out.println(new String(result));
+			return true;
+		} catch (ContractException contractE) {
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean createAsset(DtoAsset asset) {
+		byte[] result;
+
+		try {
+			result = contract.submitTransaction("CreateAsset", asset.getId(), asset.getName(), asset.getValue());
+			System.out.println("Result: " + new String(result));
+			return true;
+		} catch (ContractException contractE) {
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public void listener() {
+		Consumer<ContractEvent> listener = new Consumer<ContractEvent>() {
+			@Override
+			public void accept(ContractEvent t) {
+
+				System.out.println("===========================EVENTS=================================");
+				System.out.println("Name: " + t.getName());
+				System.out.println("TransactionId: " + t.getTransactionEvent().getTransactionID());
+				System.out.println("Creator: " + t.getTransactionEvent().getCreator());
+				System.out.println("Peer: " + t.getTransactionEvent().getPeer().getName());
+				System.out.println("Status: " + t.getTransactionEvent().isValid());
+				System.out.println("Timestamp: " + t.getTransactionEvent().getTimestamp());
+				System.out.println("Mspid: " + t.getTransactionEvent().getCreator().getMspid());
+				if (t.getPayload().get() != null)
+					System.out.println("Payload: " + new String(t.getPayload().get()));
+				// TODO Auto-generated method stub
+				System.out.println("===========================EVENTS=================================");
+
+			}
+		};
+
+		contract.addContractListener(listener);
+	}
+
 	private void connectToLedger() throws IOException {
 
 		// enrolls the admin and registers the user
@@ -110,6 +171,7 @@ public class HyperledgerService implements IHyperledgerService {
 			System.err.println(e);
 		}
 
+		System.out.println("EAE MAN");
 		// Load an existing wallet holding identities used to access the network.
 		Path walletDirectory = Paths.get("wallet");
 		Wallet wallet = Wallets.newFileSystemWallet(walletDirectory);
@@ -119,6 +181,10 @@ public class HyperledgerService implements IHyperledgerService {
 
 		// Configure the gateway connection used to access the network.
 		builder = Gateway.createBuilder().identity(wallet, "appUser").networkConfig(networkConfigFile).discovery(true);
+
+		gateway = builder.connect();
+		network = gateway.getNetwork(HYPERLEDGER_CHANNEL);
+		contract = network.getContract(HYPERLEDGER_CONTRACT);
 	}
 
 	private void enrollAdmin() throws Exception {

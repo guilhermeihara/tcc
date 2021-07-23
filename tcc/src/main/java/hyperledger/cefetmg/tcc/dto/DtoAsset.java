@@ -2,71 +2,39 @@ package hyperledger.cefetmg.tcc.dto;
 
 public class DtoAsset {
 
-	private String assetID;
-
-	private String color;
-
-	private int size;
-
-	private String owner;
-
-	private int appraisedValue;
-
-	public DtoAsset() {
-	}
-
-	public DtoAsset(String assetID, String color, int size, String owner, int appraisedValue) {
+	private String id;
+	private String name;
+	private String value;
+	
+	public DtoAsset(String id, String name, String value) {
 		super();
-		this.assetID = assetID;
-		this.color = color;
-		this.size = size;
-		this.owner = owner;
-		this.appraisedValue = appraisedValue;
+		this.id = id;
+		this.name = name;
+		this.value = value;
 	}
-
-	public String getAssetID() {
-		return assetID;
+	
+	public String getId() {
+		return id;
 	}
-
-	public void setAssetID(String assetID) {
-		this.assetID = assetID;
+	public void setId(String id) {
+		this.id = id;
 	}
-
-	public String getColor() {
-		return color;
+	public String getName() {
+		return name;
 	}
-
-	public void setColor(String color) {
-		this.color = color;
+	public void setName(String name) {
+		this.name = name;
 	}
-
-	public int getSize() {
-		return size;
+	public String getValue() {
+		return value;
 	}
-
-	public void setSize(int size) {
-		this.size = size;
-	}
-
-	public String getOwner() {
-		return owner;
-	}
-
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
-
-	public int getAppraisedValue() {
-		return appraisedValue;
-	}
-
-	public void setAppraisedValue(int appraisedValue) {
-		this.appraisedValue = appraisedValue;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	@Override
 	public String toString() {
-		return "DtoAsset [assetID=" + assetID + ", color=" + color + ", size=" + size + ", owner=" + owner
-				+ ", appraisedValue=" + appraisedValue + "]";
+		return "DtoAsset [id=" + id + ", name=" + name + ", value=" + value + "]";
 	}
+	
 }

@@ -13,6 +13,8 @@ public class DeviceForm {
 	
 	@NotNull
 	private Long type;
+	
+	private String Value;
 
 	public String getName() {
 		return name;
@@ -37,4 +39,14 @@ public class DeviceForm {
 	public void setType(Long type) {
 		this.type = type;
 	}
+
+	public String getValue() {
+		return Value;
+	}
+
+	public void setValue(String value) {
+		Value = value;
+	}
+	
+	
 }
