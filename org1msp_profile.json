@@ -1,0 +1,41 @@
+{
+    "name": "org1mspprofile",
+    "description": "Network on IBP v2",
+    "version": "1.0.0",
+    "client": {
+        "organization": "org1msp"
+    },
+    "organizations": {
+        "org1msp": {
+            "mspid": "org1msp",
+            "certificateAuthorities": [
+                "nf1d22d-org1ca.tcc-cluster-75afc640137800a911de06ccf88655dd-0000.us-south.containers.appdomain.cloud:7054"
+            ],
+            "peers": [
+                "nf1d22d-peerorg1.tcc-cluster-75afc640137800a911de06ccf88655dd-0000.us-south.containers.appdomain.cloud:7051"
+            ]
+        }
+    },
+    "peers": {
+        "nf1d22d-peerorg1.tcc-cluster-75afc640137800a911de06ccf88655dd-0000.us-south.containers.appdomain.cloud:7051": {
+            "url": "grpcs://nf1d22d-peerorg1.tcc-cluster-75afc640137800a911de06ccf88655dd-0000.us-south.containers.appdomain.cloud:7051",
+            "tlsCACerts": {
+                "pem": "-----BEGIN CERTIFICATE-----\nMIICDDCCAbKgAwIBAgIUftyZFypx3JwzHqaehYhi9ZLck10wCgYIKoZIzj0EAwIw\nZDELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQK\nEwtIeXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRUwEwYDVQQDEwxvcmcxY2Et\ndGxzY2EwHhcNMjEwNzI1MDA1NzAwWhcNMzYwNzIxMDA1NzAwWjBkMQswCQYDVQQG\nEwJVUzEXMBUGA1UECBMOTm9ydGggQ2Fyb2xpbmExFDASBgNVBAoTC0h5cGVybGVk\nZ2VyMQ8wDQYDVQQLEwZGYWJyaWMxFTATBgNVBAMTDG9yZzFjYS10bHNjYTBZMBMG\nByqGSM49AgEGCCqGSM49AwEHA0IABIWKyaeTYm5HFlWLAzoWhXz5ohXyVJFHkVN/\n33KULrqWSxTRUtBSTQjwI4+SYgdS5bNflcNL3YSCCHAn+6fAN4ujQjBAMA4GA1Ud\nDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBTpk6v0L68ypO2i\nfdHt2896UhnDdDAKBggqhkjOPQQDAgNIADBFAiEAwYFphM8erjmM1orzxicPx+dw\niWfNihwuaw0WROdUUbACIGndwqLBrtMMjvrijmWhcal8Mvgrj+Wf/fJoiU57y4Nr\n-----END CERTIFICATE-----\n"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "nf1d22d-peerorg1.tcc-cluster-75afc640137800a911de06ccf88655dd-0000.us-south.containers.appdomain.cloud"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "nf1d22d-org1ca.tcc-cluster-75afc640137800a911de06ccf88655dd-0000.us-south.containers.appdomain.cloud:7054": {
+            "url": "https://nf1d22d-org1ca.tcc-cluster-75afc640137800a911de06ccf88655dd-0000.us-south.containers.appdomain.cloud:7054",
+            "caName": "ca",
+            "tlsCACerts": {
+                "pem": [
+                    "-----BEGIN CERTIFICATE-----\nMIIDcTCCAxegAwIBAgIRAIpTL0xt7XypqWdaKTwdTncwCgYIKoZIzj0EAwIwgckx\nCzAJBgNVBAYTAlVTMRcwFQYDVQQIEw5Ob3J0aCBDYXJvbGluYTEPMA0GA1UEBxMG\nRHVyaGFtMQwwCgYDVQQKEwNJQk0xEzARBgNVBAsTCkJsb2NrY2hhaW4xbTBrBgNV\nBAMTZG5mMWQyMmQtb3JnMWNhLnRjYy1jbHVzdGVyLTc1YWZjNjQwMTM3ODAwYTkx\nMWRlMDZjY2Y4ODY1NWRkLTAwMDAudXMtc291dGguY29udGFpbmVycy5hcHBkb21h\naW4uY2xvdWQwHhcNMjEwNzI1MDEwMTM2WhcNMzEwNzIzMDEwMTM2WjCByTELMAkG\nA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMQ8wDQYDVQQHEwZEdXJo\nYW0xDDAKBgNVBAoTA0lCTTETMBEGA1UECxMKQmxvY2tjaGFpbjFtMGsGA1UEAxNk\nbmYxZDIyZC1vcmcxY2EudGNjLWNsdXN0ZXItNzVhZmM2NDAxMzc4MDBhOTExZGUw\nNmNjZjg4NjU1ZGQtMDAwMC51cy1zb3V0aC5jb250YWluZXJzLmFwcGRvbWFpbi5j\nbG91ZDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABF39fpkuB17EWIk6mQAuFsAL\nPNxrd8PVtXkiuxp7IMqjgJRLCKa+H8cMHHpE3xXBc5R8Bij4z1q8eb/vWtKvgL6j\ngd0wgdowgdcGA1UdEQSBzzCBzIJkbmYxZDIyZC1vcmcxY2EudGNjLWNsdXN0ZXIt\nNzVhZmM2NDAxMzc4MDBhOTExZGUwNmNjZjg4NjU1ZGQtMDAwMC51cy1zb3V0aC5j\nb250YWluZXJzLmFwcGRvbWFpbi5jbG91ZIJkbmYxZDIyZC1vcmcxY2EudGNjLWNs\ndXN0ZXItNzVhZmM2NDAxMzc4MDBhOTExZGUwNmNjZjg4NjU1ZGQtMDAwMC51cy1z\nb3V0aC5jb250YWluZXJzLmFwcGRvbWFpbi5jbG91ZDAKBggqhkjOPQQDAgNIADBF\nAiAsQQ0kWxZ5wVlo+Yg66e8UsaYzgxAOemwVuO6CzJXa1AIhAPs3kafQeyB8XgJS\nJAA5nkEHq95iILoUMHPRdTVkJwq2\n-----END CERTIFICATE-----\n"
+                ]
+            }
+        }
+    }
+}

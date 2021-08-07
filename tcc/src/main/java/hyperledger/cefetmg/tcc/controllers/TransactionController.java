@@ -19,10 +19,8 @@ import hyperledger.cefetmg.tcc.dto.DtoAsset;
 import hyperledger.cefetmg.tcc.dto.DtoTransaction;
 import hyperledger.cefetmg.tcc.form.TransactionForm;
 import hyperledger.cefetmg.tcc.models.Device;
-import hyperledger.cefetmg.tcc.models.Transaction;
 import hyperledger.cefetmg.tcc.repository.DeviceRepository;
 import hyperledger.cefetmg.tcc.services.HyperledgerService;
-import hyperledger.cefetmg.tcc.utils.HttpUtils;
 
 @RestController
 @RequestMapping("/transaction")
@@ -64,31 +62,31 @@ public class TransactionController {
 	@Transactional
 	public ResponseEntity<DtoTransaction> createTransaction(HttpServletRequest request,
 			@RequestBody @Valid TransactionForm transactionForm) {
-		System.out.println("OI 0");
+//		System.out.println("OI 0");
 		Long deviceId = _tokenService.getDeviceId(request);
-		System.out.println("OI 1");
+//		System.out.println("OI 1");
 		Optional<Device> device = _deviceRepository.findById(deviceId);
-		System.out.println("OI 2");
+//		System.out.println("OI 2");
 		if (device.isPresent()) {
 			Device assetDevice = device.get();
-			String originIp = HttpUtils.getRequestIP(request);
-			System.out.println("OI 3");
-			DtoAsset dtoAsset = new DtoAsset(String.valueOf(assetDevice.getId()), assetDevice.getName(),
-					transactionForm.getValue());
-			System.out.println("OI 4");
+//			String originIp = HttpUtils.getRequestIP(request);
+//			System.out.println("OI 3");
+			DtoAsset dtoAsset = new DtoAsset(String.valueOf(assetDevice.getId()) + assetDevice.getAddress(),
+					assetDevice.getName(), transactionForm.getValue(), assetDevice.getAddress());
+//			System.out.println("OI 4");
 			boolean validTransaction = _hyperledgerService.updateAsset(dtoAsset);
-			System.out.println("OI 5");
+//			System.out.println("OI 5");
 			// Mysql
-			Transaction transaction = new Transaction(assetDevice.getName(), assetDevice.getValue(),
-					transactionForm.getValue(), transactionForm.getValue(), originIp, "generateId",
-					validTransaction ? "Valid" : "Invalid");
+//			Transaction transaction = new Transaction(assetDevice.getName(), assetDevice.getValue(),
+//					transactionForm.getValue(), transactionForm.getValue(), originIp, "generateId",
+//					validTransaction ? "Valid" : "Invalid");
 			// _transactionRepository.save(transaction);
-			System.out.println("OI 6");
+//			System.out.println("OI 6");
 			if (validTransaction) {
 				assetDevice.setValue(transactionForm.getValue());
 			}
-			System.out.println("OI 7");
-			return ResponseEntity.ok(new DtoTransaction(transaction));
+//			System.out.println("OI 7");
+			return ResponseEntity.ok(new DtoTransaction());
 		}
 		return ResponseEntity.badRequest().build();
 	}

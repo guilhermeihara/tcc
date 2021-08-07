@@ -1,0 +1,16 @@
+# https://www.thinktecture.com/en/kubernetes/ssl-certificates-with-cert-manager-in-kubernetes/
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    # Staging API
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: guilhermeihara@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+    - http01:
+       ingress:
+         class: nginx

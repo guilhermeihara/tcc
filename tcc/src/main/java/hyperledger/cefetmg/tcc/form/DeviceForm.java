@@ -8,6 +8,9 @@ public class DeviceForm {
 	@NotNull @NotEmpty
 	private String name;
 	
+	@NotNull @NotEmpty
+	private String address;
+	
 	@NotNull
 	private Long tokenDuration;
 	
@@ -47,6 +50,13 @@ public class DeviceForm {
 	public void setValue(String value) {
 		Value = value;
 	}
-	
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
 	
 }

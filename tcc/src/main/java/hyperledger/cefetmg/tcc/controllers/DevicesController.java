@@ -31,7 +31,7 @@ import hyperledger.cefetmg.tcc.services.HyperledgerService;
 @RestController
 @RequestMapping("/devices")
 public class DevicesController {
-	
+
 	@Autowired
 	private TokenService _tokenService;
 	@Autowired
@@ -42,42 +42,45 @@ public class DevicesController {
 	private TokenRepository _tokenRepository;
 	@Autowired
 	HyperledgerService _hyperledgerService;
-	
+
 	@PostMapping
 	@Transactional
-	public ResponseEntity<DtoDevice> addDevice(HttpServletRequest request, @RequestBody @Valid DeviceForm deviceForm, UriComponentsBuilder uriBuilder) {
-		Long userId = _tokenService.getUserId(request);	
+	public ResponseEntity<DtoDevice> addDevice(HttpServletRequest request, @RequestBody @Valid DeviceForm deviceForm,
+			UriComponentsBuilder uriBuilder) {
+		Long userId = _tokenService.getUserId(request);
 		Optional<User> user = _userRepository.findById(userId);
-		Device device = new Device(user.get(),deviceForm.getType(),deviceForm.getName());			
+
+		Device device = new Device(user.get(), deviceForm.getAddress(), deviceForm.getType(), deviceForm.getName());
 		_deviceRepository.save(device);
 
 		String token = _tokenService.generateToken(device.getId().toString(), deviceForm.getTokenDuration());
 		Token deviceToken = new Token(token, deviceForm.getTokenDuration());
 		_tokenRepository.save(deviceToken);
 		device.setToken(deviceToken);
-		
-		if(deviceForm.getValue() != null && !deviceForm.getValue().isEmpty()) {
+
+		if (deviceForm.getValue() != null && !deviceForm.getValue().isEmpty()) {
 			device.setValue(deviceForm.getValue());
-		}else {
+		} else {
 			device.setValue("empty");
 		}
-		DtoAsset dtoAsset = new DtoAsset(device.getId().toString(), device.getName(), device.getValue());
+//		DtoAsset dtoAsset = new DtoAsset(device.getId().toString() + device.getAddress(), device.getName(), device.getValue());
+		DtoAsset dtoAsset = new DtoAsset(device.getId().toString() + device.getAddress(), device.getName(),
+				device.getValue(), device.getAddress());
 		_hyperledgerService.createAsset(dtoAsset);
 
 		return ResponseEntity.ok(new DtoDevice(device));
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<DtoDevice>  getDevice(HttpServletRequest request, @PathVariable Long id) {
+	public ResponseEntity<DtoDevice> getDevice(HttpServletRequest request, @PathVariable Long id) {
 		Long userId = _tokenService.getUserId(request);
 		System.out.println(userId);
-		
+
 		Optional<Device> device = _deviceRepository.findById(id);
-				
-		if(device.isPresent()) {
-			System.out.println(device.get().getUser().getId()); 
+
+		if (device.isPresent()) {
 			Long deviceUserId = device.get().getUser().getId();
-			if(userId.equals(deviceUserId)) {				
+			if (userId.equals(deviceUserId)) {
 				return ResponseEntity.ok(new DtoDevice(device.get()));
 			}
 		}

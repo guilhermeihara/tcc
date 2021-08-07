@@ -1,0 +1,44 @@
+[
+    {
+        "transactionName": "tccExists",
+        "transactionLabel": "A test tccExists transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "createTcc",
+        "transactionLabel": "A test createTcc transaction",
+        "arguments": [
+            "001",
+            "some value"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "readTcc",
+        "transactionLabel": "A test readTcc transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "updateTcc",
+        "transactionLabel": "A test updateTcc transaction",
+        "arguments": [
+            "001",
+            "some other value"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "deleteTcc",
+        "transactionLabel": "A test deleteTcc transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    }
+]

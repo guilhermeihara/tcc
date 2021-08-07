@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/issuer: "letsencrypt-prod"
+    acme.cert-manager.io/http01-edit-in-place: "true"
+  #   nginx.ingress.kubernetes.io/rewrite-target: /
+  name: api
+spec:
+  tls:
+  - hosts:
+    - app.takaboy.com.br
+    # reference secret for production TLS certificate
+    secretName: api-production-certificate
+  rules:
+  # - host: tcc-cluster-75afc640137800a911de06ccf88655dd-0000.us-south.containers.appdomain.cloud
+  - host: app.takaboy.com.br
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api
+            port:
+              number: 80
+  # tls:
+  # - hosts:
+  #   - tcc.takaboy.com.br
+  #   secretName: api-tls-secret

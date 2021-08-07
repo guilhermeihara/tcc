@@ -18,11 +18,13 @@ public class Device {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@ManyToOne
+	private User user;
+
 	@OneToOne(fetch = FetchType.EAGER)
 	private Token token;
 
-	@ManyToOne
-	private User user;
+	private String address;
 
 	@Column(name = "creation_date")
 	private LocalDateTime creationDate = LocalDateTime.now();
@@ -38,7 +40,6 @@ public class Device {
 	}
 
 	
-	
 	public Device(Token token, User user, Long type, String name) {
 		super();
 		this.token = token;
@@ -47,6 +48,16 @@ public class Device {
 		this.name = name;
 	}
 	
+	
+	public Device(User user, String address, Long type, String name) {
+		super();
+		this.user = user;
+		this.address = address;
+		this.type = type;
+		this.name = name;
+	}
+
+
 	public Device(User user, Long type, String name) {
 		super();
 		this.user = user;
@@ -108,6 +119,14 @@ public class Device {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	@Override
