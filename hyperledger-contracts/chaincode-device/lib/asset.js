@@ -22,7 +22,7 @@ async function savePrivateData(ctx, assetKey) {
 async function removePrivateData(ctx, assetKey) {
     const mspid = ctx.clientIdentity.getMSPID();
     const collection = '_implicit_org_' + mspid;
-    
+
     const propertiesBuffer = await ctx.stub.getPrivateData(collection, assetKey);
     if (propertiesBuffer && propertiesBuffer.length > 0) {
         await ctx.stub.deletePrivateData(collection, assetKey);
@@ -42,91 +42,66 @@ async function readState(ctx, id) {
 
 
 class TccContract extends Contract {
-    async CreateAsset(ctx, id, address, name, value) {
+    async CreateAsset(ctx, address, owner, name, value) {
         const asset = {
-            id: id,
             name: name,
             value: value,
-            address: address
+            owner: owner,
+            address: address,
         };
-        await savePrivateData(ctx, id);
+        await savePrivateData(ctx, address);
         const assetBuffer = Buffer.from(JSON.stringify(asset));
 
         ctx.stub.setEvent('CreateAsset', assetBuffer);
-        return ctx.stub.putState(id, assetBuffer);
-
-        // ctx.stub.putState(id, Buffer.from(JSON.stringify(asset)));
-        // return JSON.stringify(asset);
+        return ctx.stub.putState(address, assetBuffer);
     }
 
     // ReadAsset returns the asset stored in the world state with given id.
-    async ReadAsset(ctx, id) {
-        const assetJSON = await ctx.stub.getState(id); // get the asset from chaincode state
+    async ReadAsset(ctx, address) {
+        const assetJSON = await ctx.stub.getState(address); // get the asset from chaincode state
         if (!assetJSON || assetJSON.length === 0) {
-            throw new Error(`The asset ${id} does not exist`);
+            throw new Error(`The asset ${address} does not exist`);
         }
         return assetJSON.toString();
     }
 
     // UpdateAsset updates an existing asset in the world state with provided parameters.
-    async UpdateAsset(ctx, id, name, value) {
-        const asset = await readState(ctx, id);
+    async UpdateAsset(ctx, address, name, value) {
+        const asset = await readState(ctx, address);
 
         const updateEvent = {
-            id: id,
-            name: asset.Name,
-            address: asset.Address,
-            oldValue: asset.Value,
+            name: name,
+            address: address,
+            oldValue: asset.value,
             newValue: value,
         };
 
-        asset.Name = name;
-        asset.Value = value;
+        asset.name = name;
+        asset.value = value;
         const assetBuffer = Buffer.from(JSON.stringify(asset));
         const eventBuffer = Buffer.from(JSON.stringify(updateEvent));
 
-        await savePrivateData(ctx, id);
+        await savePrivateData(ctx, address);
 
         ctx.stub.setEvent('UpdateAsset', eventBuffer);
-        return ctx.stub.putState(id, assetBuffer);
-
-        // const exists = await this.AssetExists(ctx, id);
-        // if (!exists) {
-        //     throw new Error(`The asset ${id} does not exist`);
-        // }
-
-        // // overwriting original asset with new asset
-        // const updatedAsset = {
-        //     ID: id,
-        //     Name: name,
-        //     Value: value,
-        // };
-        // return ctx.stub.putState(id, Buffer.from(JSON.stringify(updatedAsset)));
+        return ctx.stub.putState(address, assetBuffer);
     }
 
     // DeleteAsset deletes an given asset from the world state.
-    async DeleteAsset(ctx, id) {
-        const asset = await readState(ctx, id);
+    async DeleteAsset(ctx, address) {
+        const asset = await readState(ctx, address);
         const assetBuffer = Buffer.from(JSON.stringify(asset));
-        await removePrivateData(ctx, id);
+        await removePrivateData(ctx, address);
 
         ctx.stub.setEvent('DeleteAsset', assetBuffer);
-        return ctx.stub.deleteState(id);
+        return ctx.stub.deleteState(address);
     }
 
     // AssetExists returns true when asset with given ID exists in world state.
-    async AssetExists(ctx, id) {
-        const assetJSON = await ctx.stub.getState(id);
+    async AssetExists(ctx, address) {
+        const assetJSON = await ctx.stub.getState(address);
         return assetJSON && assetJSON.length > 0;
     }
-
-    // TransferAsset updates the owner field of asset with given id in the world state.
-    // async TransferAsset(ctx, id, newOwner) {
-    //     const assetString = await this.ReadAsset(ctx, id);
-    //     const asset = JSON.parse(assetString);
-    //     asset.Owner = newOwner;
-    //     return ctx.stub.putState(id, Buffer.from(JSON.stringify(asset)));
-    // }
 
     // GetAllAssets returns all assets found in the world state.
     async GetAllAssets(ctx) {

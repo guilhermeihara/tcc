@@ -5,7 +5,8 @@
 module.exports = {
     env: {
         node: true,
-        mocha: true
+        mocha: true,
+        es6: true
     },
     parserOptions: {
         ecmaVersion: 8,
@@ -14,6 +15,7 @@ module.exports = {
     extends: "eslint:recommended",
     rules: {
         indent: ['error', 4],
+        'linebreak-style': ['error', 'unix'],
         quotes: ['error', 'single'],
         semi: ['error', 'always'],
         'no-unused-vars': ['error', { args: 'none' }],
@@ -31,6 +33,7 @@ module.exports = {
         'no-with': 'error',
         'operator-linebreak': 'error',
         yoda: 'error',
-        'quote-props': ['error', 'as-needed']
+        'quote-props': ['error', 'as-needed'],
+        'no-constant-condition': ["error", { "checkLoops": false }]
     }
 };
