@@ -4,6 +4,9 @@ public class DtoTransaction {
 
 	private String id;
 	private String name;
+	private String address;
+	private String owner;
+	private String email;
 	private String contract;
 	private String oldValue;
 	private String proposedValue;
@@ -19,6 +22,30 @@ public class DtoTransaction {
 	
 	public String getContract() {
 		return contract;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public void setContract(String contract) {

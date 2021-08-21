@@ -6,25 +6,21 @@ import hyperledger.cefetmg.tcc.models.Device;
 
 public class DtoDevice {
 
-	private Long id;
-
 	private String name;
 	private LocalDateTime creationDate;
-	private Long type;
 
 	private Long userId;
 
 	private String token;
+	private String value;
 	private LocalDateTime tokenCreationDate;
 	private LocalDateTime tokenExpirationDate;
 
 	
-	public DtoDevice(Long id, String name, LocalDateTime creationDate, Long type, Long userId, String token,
+	public DtoDevice(String name, LocalDateTime creationDate, Long userId, String token,
 			LocalDateTime tokenCreationDate, LocalDateTime tokenExpirationDate) {
-		this.id = id;
 		this.name = name;
 		this.creationDate = creationDate;
-		this.type = type;
 		this.userId = userId;
 		this.token = token;
 		this.tokenCreationDate = tokenCreationDate;
@@ -32,22 +28,21 @@ public class DtoDevice {
 	}
 	
 	public DtoDevice(Device device) {
-		this.id = device.getId();
 		this.name = device.getName();
 		this.creationDate = device.getCreationDate();
-		this.type = device.getType();
 		this.userId = device.getUser().getId();
 		this.token = device.getToken().getToken();
 		this.tokenCreationDate = device.getToken().getCreationDate();
 		this.tokenExpirationDate = device.getToken().getExpirationDate();
+		this.value = device.getValue();
 	}
 
-	public Long getId() {
-		return id;
+	public String getValue() {
+		return value;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public String getName() {
@@ -64,14 +59,6 @@ public class DtoDevice {
 
 	public void setCreationDate(LocalDateTime creationDate) {
 		this.creationDate = creationDate;
-	}
-
-	public Long getType() {
-		return type;
-	}
-
-	public void setType(Long type) {
-		this.type = type;
 	}
 
 	public Long getUserId() {

@@ -2,25 +2,34 @@ package hyperledger.cefetmg.tcc.dto;
 
 public class DtoAsset {
 
-	private String id;
 	private String name;
 	private String value;
 	private String address;
-	
-	public DtoAsset(String id, String name, String value, String address) {
+	private String token;
+	private String owner;
+
+	public DtoAsset(String name, String value, String address) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.value = value;
 		this.address = address;
 	}
-
-	public String getId() {
-		return id;
+	
+	public DtoAsset(String name, String value, String address, String owner) {
+		super();
+		this.name = name;
+		this.value = value;
+		this.address = address;
+		this.owner = owner;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public DtoAsset(String name, String value, String address, String token, String owner) {
+		super();
+		this.name = name;
+		this.value = value;
+		this.address = address;
+		this.token = token;
+		this.owner = owner;
 	}
 
 	public String getName() {
@@ -46,5 +55,21 @@ public class DtoAsset {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
 }

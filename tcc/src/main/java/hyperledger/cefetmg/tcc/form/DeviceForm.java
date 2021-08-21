@@ -14,9 +14,6 @@ public class DeviceForm {
 	@NotNull
 	private Long tokenDuration;
 	
-	@NotNull
-	private Long type;
-	
 	private String Value;
 
 	public String getName() {
@@ -33,14 +30,6 @@ public class DeviceForm {
 
 	public void setTokenDuration(Long tokenDuration) {
 		this.tokenDuration = tokenDuration;
-	}
-
-	public Long getType() {
-		return type;
-	}
-
-	public void setType(Long type) {
-		this.type = type;
 	}
 
 	public String getValue() {
